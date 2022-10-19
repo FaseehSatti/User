@@ -15,6 +15,11 @@ const ProductSchema = new mongoose.Schema({
         type:String,
         required:[true,'please add description'],
     },
+    user:{
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required:true
+    },
     createdAt:{
         type:Date,
         default:Date.now

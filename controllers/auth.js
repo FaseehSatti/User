@@ -6,8 +6,8 @@ exports.register =asyncHandler(async(req,res,next)=>{
         const {name,email,password,role}=req.body;
         const user = await User.create({name,email,password,role});
         // res.status(200).json({success:true,data:"jshdi"});
-        const token = user.getSignedJwtToken();
-        res.status(200).json({success:true,data:user,token});
+        // const token = user.getSignedJwtToken();
+        res.status(200).json({success:true,data:user});
         // res.status(404).json({success:true,data:"Error"});
         // console.log(err);
 });
@@ -15,7 +15,7 @@ exports.login =asyncHandler(async(req,res,next)=>{
     const {email,password} = req.body;
     if(!email || !password){
         // return next(new ErrorResponse("invalid ceredentials",400));
-        return res.status(400).json({success:true,error:"invalid ceredentials"});
+        return res.status(400).json({success:false,error:"Provide valid ceredentials"});
     }
 
     // if(!email){
@@ -30,13 +30,15 @@ exports.login =asyncHandler(async(req,res,next)=>{
     // const user = await User.findOne({email,password});
         // res.status(404).json({success:true,data:"Error"});
         if(!user){
-           return res.status(400).json({success:false,error:"invalid ceredentials"});
+           return res.status(400).json({success:false,error:"User Not Found"});
         }
         //password match
         const isMatch = await user.matchPassword(password);
         if(!isMatch){
-            return res.status(400).json({success:false,error:"wrong ceredentials"})
+            return res.status(400).json({success:false,error:"Wrong ceredentials"})
         }
         // const isMatch = await user.matchPassword(password);
-        res.status(200).json({success:true,data:user});
+        // generate token
+        const token = user.getSignedJwtToken();
+        res.status(200).json({success:true,data:user,token});
 });
